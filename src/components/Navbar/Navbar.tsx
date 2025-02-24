@@ -1,8 +1,11 @@
 import { AppBar, Button, Toolbar, Typography } from "@mui/material"
 import { CustomDialog, dialogOpenSubject$ } from "../CustomDialog"
 import { FavoriteTable } from "./FavoriteTable"
+import { AppStore } from "@/redux/store"
+import { useSelector } from "react-redux"
 
 export const Navbar = () => {
+  useSelector((store: AppStore) => store.people)
 
   const handleClick = () => {
     dialogOpenSubject$.setSubject = true

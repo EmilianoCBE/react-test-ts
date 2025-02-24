@@ -1,34 +1,19 @@
 import { Person } from "@/models"
-import { addFavorite } from "@/redux/states"
+import { addFavorite, removeFavorite } from "@/redux/states"
 import { AppStore } from "@/redux/store"
-import { Checkbox } from "@mui/material"
-import { GridRenderCellParams, DataGrid } from "@mui/x-data-grid"
+import { Button } from "@mui/material"
+import { DataGrid, GridRenderCellParams } from "@mui/x-data-grid"
 import { useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
 export const FavoriteTable = () => {
-  const [selectedPeople, setSelectedPeople] = useState<Person[]>([])
   const pageSize = 5
   const dispatch = useDispatch()
 
   const stateFavorites = useSelector((store: AppStore) => store.favorites)
   
-
-  const findPerson = (person: Person) => {
-    return !!selectedPeople.find(p => p.id === person.id)
-  }
-
-  const filterPerson = (person: Person) => {
-    return selectedPeople.filter(p => p.id !== person.id)
-  }
-
-  const handleChange = (person: Person) => {
-    const filteredPeople = findPerson(person) ? 
-    filterPerson(person) : [...selectedPeople, person]
-
-    dispatch(addFavorite(filteredPeople))
-
-    setSelectedPeople(filteredPeople)
+  const handleClick = (person: Person) => {
+    dispatch(removeFavorite(person))
   }
 
   const columns = [
@@ -39,11 +24,14 @@ export const FavoriteTable = () => {
       headerName: '',
       width: 50,
       renderCell: (params: GridRenderCellParams) => <>{
-        <Checkbox 
-          size='small' 
-          checked={findPerson(params.row)}  
-          onChange={() => handleChange(params.row)}
-        />
+        <Button
+          variant="contained"
+          color="secondary"
+          size="small"
+          onClick={() => handleClick(params.row)}
+        >
+          Delete Favorite
+        </Button>
       }</>
     },
     {
@@ -63,6 +51,13 @@ export const FavoriteTable = () => {
     {
       field: 'company',
       headerName: 'Company',
+      flex: 1,
+      minWidth: 150,
+      renderActionsCell: (params: GridRenderCellParams) => <>{params.field}</>
+    },
+    {
+      field: 'levelOfHappiness',
+      headerName: 'Level of Happiness',
       flex: 1,
       minWidth: 150,
       renderActionsCell: (params: GridRenderCellParams) => <>{params.field}</>
